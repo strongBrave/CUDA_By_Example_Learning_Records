@@ -1,5 +1,4 @@
-// nvcc -o ../res/julia_set julia_set.cu -lglut -lGL -lGLU
-#include "../../common/book.h"
+#include "../common/book.h"
 
 #define N 10
 
