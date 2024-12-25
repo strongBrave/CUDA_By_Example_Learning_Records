@@ -27,8 +27,6 @@ static void HandleError( cudaError_t err,
         exit( EXIT_FAILURE );
     }
 }
-//这个宏只是判断函数调用是否返回了一个错误值，如果是的话，那么将输出相应的信息，
-//退出应用程序并将退出代码设置为EXIT_FAILURE
 #define HANDLE_ERROR( err ) (HandleError( err, __FILE__, __LINE__ ))
 
 
@@ -133,8 +131,7 @@ __global__ void float_to_color( uchar4 *optr,
     #include <windows.h>
 
     typedef HANDLE CUTThread;
-    //typedef unsigned (WINAPI *CUT_THREADROUTINE)(void *);
-    typedef void *(*CUT_THREADROUTINE)(void *);
+    typedef unsigned (WINAPI *CUT_THREADROUTINE)(void *);
 
     #define CUT_THREADPROC unsigned WINAPI
     #define  CUT_THREADEND return 0
