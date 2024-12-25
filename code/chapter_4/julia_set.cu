@@ -1,6 +1,6 @@
 // note: Complie command "nvcc -o res/julia_set julia_set.cu -lglut -lGL -lGLU"
 #include "../common/book.h"
-#include "../common/cpu_bitmap.h"
+#include "../common/cpu_bitmap_save.h"
 
 #define DIM 1000
 
@@ -28,18 +28,30 @@ __device__ int julia(int x, int y)
 {
     const float scale = 1.5;
     float jx = scale * (float)(DIM / 2 - x) / (DIM / 2);
-    float jy = scale * (float)(DIM / 2- y) / (DIM / 2);
+    float jy = scale * (float)(DIM / 2 - y) / (DIM / 2);
 
     cuComplex c(-0.8, 0.156);
     cuComplex a(jx, jy);
 
     int i = 0;
-    for (i = 0; i < 200; i ++ )
+    for (i = 0; i < 200; i++)
     {
         a = a * a + c;
-        if (a.magnitude2() > 1000) return 0;
+        if (a.magnitude2() > 1000) return i; // 返回迭代次数
     }
-    return 1;
+    return 200; // 最大迭代次数
+}
+
+// 将迭代次数映射到颜色的函数
+__device__ void color_map(int value, unsigned char &r, unsigned char &g, unsigned char &b)
+{
+    // 创建一个渐变色，基于 value 映射到 [0, 1]
+    float t = (float)value / 200.0f;
+
+    // 使用一种平滑的颜色映射算法
+    r = (unsigned char)(9 * (1 - t) * t * t * t * 255);  // 渐变的红色分量
+    g = (unsigned char)(15 * (1 - t) * (1 - t) * t * t * 255); // 渐变的绿色分量
+    b = (unsigned char)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255); // 渐变的蓝色分量
 }
 
 __global__ void kernel(unsigned char *ptr)
@@ -49,12 +61,17 @@ __global__ void kernel(unsigned char *ptr)
     int y = blockIdx.y;
     int offset = x + y * gridDim.x;
 
-    // now calcualte the value at that position
+    // now calculate the value at that position
     int juliaValue = julia(x, y);
-    ptr[offset * 4 + 0] = 255 * juliaValue;  //  R channel
-    ptr[offset * 4 + 1] = 0; // G channel
-    ptr[offset * 4 + 2] = 0; // B channel 
-    ptr[offset * 4 + 3] = 255; // alpha channel (opacity)
+
+    // 根据 Julia 集值映射颜色
+    unsigned char r, g, b;
+    color_map(juliaValue, r, g, b);
+
+    ptr[offset * 4 + 0] = r; // R channel
+    ptr[offset * 4 + 1] = g; // G channel
+    ptr[offset * 4 + 2] = b; // B channel 
+    ptr[offset * 4 + 3] = 255; // Alpha channel (opacity)
 }
 
 int main(void)
