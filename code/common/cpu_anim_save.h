@@ -41,12 +41,12 @@ struct CPUAnimBitmap {
         fAnim = f;
         animExit = e;
 
-        int total_frames = 100; // 设定保存的总帧数
+        int total_frames = 1800; // 设定保存的总帧数
         for (int i = 0; i < total_frames; ++i) {
             fAnim(dataBlock, i); // 调用生成帧的函数
 
             // 保存当前帧为图片
-            std::string filename = "imgs/frame_" + std::to_string(i) + ".png";
+            std::string filename = "/nas/home/yujunhao/cuda_by_example/code/chapter_7/imgs/frame_" + std::to_string(i) + ".png";
             save_to_file(filename);
         }
 

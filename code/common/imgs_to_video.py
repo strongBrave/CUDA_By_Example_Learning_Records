@@ -3,13 +3,14 @@ This py file is used to make videos for the anim.cu file in the chapter_5.
 """
 import cv2
 import os
+import argparse
 
-def images_to_video(image_folder, output_video_file, fps=30):
+def images_to_video(image_folder, output_video_path, fps=30):
     """
     将指定文件夹中的图片整理成视频并保存。
 
     :param image_folder: 包含帧图片的文件夹路径。
-    :param output_video_file: 保存视频的路径，例如 "output.mp4"。
+    :param output_video_path: 保存视频的路径，例如 "output.mp4"。
     :param fps: 视频的帧率 (Frames Per Second)。
     """
     # 获取图片列表，并按文件名排序
@@ -28,7 +29,7 @@ def images_to_video(image_folder, output_video_file, fps=30):
 
     # 定义视频编码器（使用 MP4 编码器）
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 保存为 MP4 格式
-    video = cv2.VideoWriter(output_video_file, fourcc, fps, (width, height))
+    video = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
 
     # 遍历所有图片并写入视频
     for image in images:
@@ -38,9 +39,36 @@ def images_to_video(image_folder, output_video_file, fps=30):
 
     # 释放视频对象
     video.release()
-    print(f"Video saved to {output_video_file}")
+    print(f"Video saved to {output_video_path}")
 
-# 使用示例
-image_folder = "./imgs"  # 替换为你的图片文件夹路径
-output_video_file = "anim.mp4"  # 替换为你希望保存的视频路径
-images_to_video(image_folder, output_video_file, fps=30)
+
+def main():
+    # 使用 argparse 模块解析命令行参数
+    parser = argparse.ArgumentParser(description="Convert images to video.")
+    parser.add_argument(
+        "-i", "--image_folder", 
+        type=str, 
+        required=True, 
+        help="Path to the folder containing images."
+    )
+    parser.add_argument(
+        "-o", "--output_video_path", 
+        type=str, 
+        required=True, 
+        help="Path to save the output video file."
+    )
+    parser.add_argument(
+        "-f", "--fps", 
+        type=int, 
+        default=30, 
+        help="Frames per second for the output video (default: 30)."
+    )
+
+    args = parser.parse_args()
+
+    # 调用 images_to_video 函数
+    images_to_video(args.image_folder, args.output_video_path, args.fps)
+
+
+if __name__ == "__main__":
+    main()
