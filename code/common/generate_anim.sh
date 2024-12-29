@@ -9,11 +9,11 @@ cd ../
 echo "Current directory: $(pwd)"
 # Define variables
 CHAPTER_DIR="/nas/home/yujunhao/cuda_by_example/code/chapter_7"
-ANIM_FILE_NAME="heater"
+ANIM_FILE_NAME="heater_w_texture_memory"
 ANIM_CU_FILE_PATH="$CHAPTER_DIR/$ANIM_FILE_NAME.cu"          # Path to the CUDA source file
 ANIM_EXE_SAVE_PATH="$CHAPTER_DIR/res/$ANIM_FILE_NAME"        # Path where the compiled executable will be saved
 CONDA_ENV_NAME="gen6d"               # Conda environment name
-I2V_PY_PATH="./common/imgs_to_video.py"       # Path to the Python script for converting images to video
+I2V_PY_PATH="/nas/home/yujunhao/cuda_by_example/code/common/imgs_to_video.py"       # Path to the Python script for converting images to video
 IMG_FOLDER="$CHAPTER_DIR/imgs"                  # Directory where the generated frames (images) will be stored
 OUTPUT_VIDEO_DIR=""
 OUTPUT_VIDEO_PATH="$CHAPTER_DIR/$ANIM_FILE_NAME.mp4"
